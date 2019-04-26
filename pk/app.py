@@ -18,9 +18,16 @@ from dash.dependencies import Input, Output, State
 
 import utils
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+header_style = {
+    'backgroundColor': 'rgb(2,21,70)',
+    'color': 'white',
+    'fontWeight': 'bold',
+    'textAlign': 'center'
+}
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+app = dash.Dash(__name__)#, external_stylesheets=external_stylesheets)
 
 pkdata = pd.DataFrame({'subject_index': [0, 0, 0, 0, 0, 0, 0, 0,
                                          1, 1, 1, 1, 1, 1, 1, 1,
@@ -36,63 +43,72 @@ pkdata = pd.DataFrame({'subject_index': [0, 0, 0, 0, 0, 0, 0, 0,
 n_subjects = len(pkdata.subject_index.unique())
 n_times = len(pkdata.time.unique())
 
-app.layout = html.Div(className='container', children=[
-    html.H1(children='Noncompartmental Pharmacokinetics Analysis'),
+app.layout = html.Div(className='', children=[
+    html.H1(className='pk-banner', children='Noncompartmental Pharmacokinetics Analysis'),
+    html.Div(className='container', children=[
+    html.Div(className='row', style={}, children=[
 
-    html.Div(children=[
+        html.Div(className='three columns pk-settings', children=[
+            html.Div([
+                'Time Points:',
+                dcc.Input(
+                    id='times-input',
+                    placeholder='Enter a value...',
+                    type='number',
+                    value=n_times,
+                    debounce=True,
+                    #style={'margin': 10, 'width': 50}
+                ),
+                'Subjects:',
 
-        html.Div([
-            'Time Points:',
-            dcc.Input(
-                id='times-input',
-                placeholder='Enter a value...',
-                type='number',
-                value=n_times,
-                debounce=True,
-                style={'margin': 10, 'width': 50}
-            ),
-            'Subjects:',
-
-            dcc.Input(
-                id='subjects-input',
-                placeholder='Enter a value...',
-                type='number',
-                value=n_subjects,
-                debounce=True,
-                style={'margin': 10, 'width': 50}
-            ),
+                dcc.Input(
+                    id='subjects-input',
+                    placeholder='Enter a value...',
+                    type='number',
+                    value=n_subjects,
+                    debounce=True,
+                    #style={'margin': 10, 'width': 50}
+                ),
+            ]),
         ]),
+        html.Div(className='nine columns pk-data-table', children=[
+                dash_table.DataTable(
+                    id='data-table',
+                    columns=[{"name": 'Time (min)', "id": 'time', 'type': 'numeric'}] +
+                            [{"name": 'Conc{} (uM)'.format(subject), 'id': subject, 'type': 'numeric'}
+                             for subject in pkdata.subject_index.unique()],
+                    data=utils.pkdata2dt(pkdata),
+                    editable=True,
+                    style_header=header_style,
 
-        html.Div(children=[
-            dash_table.DataTable(
-                id='data-table',
-                columns=[{"name": 'Time (min)', "id": 'time', 'type': 'numeric'}] +
-                        [{"name": 'Conc{} (uM)'.format(subject), 'id': subject, 'type': 'numeric'}
-                         for subject in pkdata.subject_index.unique()],
-                data=utils.pkdata2dt(pkdata),
-                editable=True,
-                content_style='fit'
-            )
-        ]),
+                )
+            ])
 
-        html.Div(children=[
+    ]),
+    html.Div(className='row', children= [
+        html.Div(className='six columns', children=[
             dcc.Graph(
                 id='results-graph',
 
             )
         ]),
 
-        html.Div(children=[
-            dash_table.DataTable(
-                id='results-table',
-                style_data_conditional=[{
-                    'if': {'column_id': 'param'},
-                    'fontFamily': 'times',
-                }],
-                content_style='fit',
-                style_cell={'padding-left': 20}
-            )
-        ]),
+        html.Div(className='six columns pk-results-table', children=[
+        dash_table.DataTable(
+            id='results-table',
+            style_header=header_style,
+            style_cell_conditional=[
+                                       {
+                                           'if': {'column_id': 'param'},
+                                           'textAlign': 'right',
+                                           'paddingRight': 10
+                                       }
+                                   ],
+            #content_style='fit',
+            #style_cell={'padding-left': 20}
+        )
+    ]),
+    ])
     ])
 ])
 
@@ -151,10 +167,25 @@ def update_output(records):
         data=fig_data,
 
         layout=go.Layout(
-            xaxis=dict(title='Time (min)'),
+            xaxis=dict(zeroline=False),
             yaxis=dict(title='Conc (uM)',
                        type='log',
-                       rangemode='tozero')
+                       rangemode='tozero',
+                       zeroline=False,
+                       showticklabels=False
+
+                       ),
+            margin=dict(
+                l=40,
+                r=30,
+                b=50,
+                t=50,
+    ),
+            showlegend=False,
+            height=331,
+            paper_bgcolor='rgb(245, 247, 249)',
+            plot_bgcolor='rgb(245, 247, 249)',
+
         )
     )
 
