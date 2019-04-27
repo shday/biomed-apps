@@ -8,7 +8,7 @@
 .pk-banner {
   background: rgb(2,21,70);
   color: white;
-  padding: 15px;
+  padding: 12px 40px;
   font-size: 20px;
   margin-bottom: 30px;}
 
@@ -52,7 +52,7 @@
   }
 
 #results-table td {
-  padding: 15px 0px;
+  padding: 12px 0px;
   text-align: center;
   background: rgb(245, 247, 249);}
 

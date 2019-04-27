@@ -199,7 +199,7 @@ def update_output(records):
                 t=50,
             ),
             showlegend=False,
-            height=331,
+            height=294,
             paper_bgcolor='rgb(245, 247, 249)',
             plot_bgcolor='rgb(245, 247, 249)',
 
