@@ -18,10 +18,10 @@ from dash.dependencies import Input, Output, State
 
 import utils
 
-header_style = {
+table_header_style = {
     'backgroundColor': 'rgb(2,21,70)',
     'color': 'white',
-    'fontWeight': 'bold',
+    #'fontWeight': 'bold',
     'textAlign': 'center'
 }
 
@@ -44,34 +44,35 @@ n_subjects = len(pkdata.subject_index.unique())
 n_times = len(pkdata.time.unique())
 
 app.layout = html.Div(className='', children=[
-    html.H1(className='pk-banner', children='Noncompartmental Pharmacokinetics Analysis'),
+    html.Div(className='pk-banner', children='Noncompartmental Pharmacokinetics Analysis'),
     html.Div(className='container', children=[
     html.Div(className='row', style={}, children=[
 
-        html.Div(className='three columns pk-settings', children=[
+        html.Div(className='four columns pk-settings', children=[
+            html.P(['Settings']),
             html.Div([
-                'Time Points:',
-                dcc.Input(
-                    id='times-input',
-                    placeholder='Enter a value...',
-                    type='number',
-                    value=n_times,
-                    debounce=True,
-                    #style={'margin': 10, 'width': 50}
-                ),
-                'Subjects:',
+                html.Label([html.Div(['Time points']),
+                            dcc.Input(
+                                id='times-input',
+                                placeholder='Enter a value...',
+                                type='number',
+                                value=n_times,
+                                debounce=True,
+                                #style={'width': 50}
+                            )]),
+                html.Label([html.Div(['Subjects']),
 
-                dcc.Input(
-                    id='subjects-input',
-                    placeholder='Enter a value...',
-                    type='number',
-                    value=n_subjects,
-                    debounce=True,
-                    #style={'margin': 10, 'width': 50}
-                ),
+                          dcc.Input(
+                              id='subjects-input',
+                              placeholder='Enter a value...',
+                              type='number',
+                              value=n_subjects,
+                              debounce=True,
+                              #style={'width': 50}
+                          )]),
             ]),
         ]),
-        html.Div(className='nine columns pk-data-table', children=[
+        html.Div(className='eight columns pk-data-table', children=[
                 dash_table.DataTable(
                     id='data-table',
                     columns=[{"name": 'Time (min)', "id": 'time', 'type': 'numeric'}] +
@@ -79,7 +80,8 @@ app.layout = html.Div(className='', children=[
                              for subject in pkdata.subject_index.unique()],
                     data=utils.pkdata2dt(pkdata),
                     editable=True,
-                    style_header=header_style,
+                    style_header=table_header_style,
+                    #active_cell=[1, 1]
 
                 )
             ])
@@ -96,13 +98,17 @@ app.layout = html.Div(className='', children=[
         html.Div(className='six columns pk-results-table', children=[
         dash_table.DataTable(
             id='results-table',
-            style_header=header_style,
+            style_header=table_header_style,
             style_cell_conditional=[
                                        {
                                            'if': {'column_id': 'param'},
                                            'textAlign': 'right',
                                            'paddingRight': 10
-                                       }
+                                       },
+                                        {
+                                            'if': {'row_index': 'odd'},
+                                            'backgroundColor': 'white'
+                                        }
                                    ],
             #content_style='fit',
             #style_cell={'padding-left': 20}
@@ -168,7 +174,11 @@ def update_output(records):
 
         layout=go.Layout(
             xaxis=dict(zeroline=False),
-            yaxis=dict(title='Conc (uM)',
+            yaxis=dict(title=dict(text='Conc (uM)',
+                                  font=dict(family='"Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif',
+                                            size=12)
+                                    ),
+
                        type='log',
                        rangemode='tozero',
                        zeroline=False,
