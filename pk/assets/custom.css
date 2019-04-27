@@ -1,23 +1,9 @@
 
 .container {
-  max-width: 1200px;
-  /*border: 1px solid red*/}
-
-.column,
-.columns {
-  /*outline: 1px solid red*/}
+  max-width: 1200px;}
 
 
-label {
-  display: flex;
-  justify-content: space-around;
-  margin: 10px 0px}
 
-label div {margin-top: auto;
-           margin-bottom: auto;
-           font-size: 0.9em;
-           color: grey;
-           width: 80px}
 
 .pk-banner {
   background: rgb(2,21,70);
@@ -38,16 +24,28 @@ label div {margin-top: auto;
 .pk-settings > div {
   margin:0px 40px;}
 
-.pk-settings input {height: 30px;
-                    width: 50px;}
+.pk-settings label {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0px}
 
-#data-table td {
-  padding: 5px 15px;
-  }
+.pk-settings label div {margin-top: auto;
+           margin-bottom: auto;
+           font-size: 12px;
+           color: grey;
+           width: 80px}
+
+.pk-settings input {height: 30px;
+                    width: 55px;
+                    font-size: 12px;}
 
 .pk-data-table {
   height: 271px;
   overflow: auto;}
+
+#data-table td {
+  padding: 5px 15px;
+  }
 
 .pk-results-table {
   overflow: auto;
@@ -62,8 +60,8 @@ label div {margin-top: auto;
   border: 1px solid #E1E1E1}
 
 td {font-family: "Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 0.8em;}
+    font-size: 12px;}
 
 th {font-family: "Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    font-size: 0.8em;}
+    font-size: 12px;}
 

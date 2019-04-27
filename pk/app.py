@@ -21,20 +21,17 @@ import utils
 table_header_style = {
     'backgroundColor': 'rgb(2,21,70)',
     'color': 'white',
-    #'fontWeight': 'bold',
     'textAlign': 'center'
 }
 
-#external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__)#, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__)
 
 pkdata = pd.DataFrame({'subject_index': [0, 0, 0, 0, 0, 0, 0, 0,
                                          1, 1, 1, 1, 1, 1, 1, 1,
                                          2, 2, 2, 2, 2, 2, 2, 2],
-                       'time': [5, 15, 30, 60, 120, 240, 360, 480,
-                                5, 15, 30, 60, 120, 240, 360, 480,
-                                5, 15, 30, 60, 120, 240, 360, 480],
+                       'time': [0.0833, 0.25, 0.5, 1, 2, 4, 6, 8,
+                                0.0833, 0.25, 0.5, 1, 2, 4, 6, 8,
+                                0.0833, 0.25, 0.5, 1, 2, 4, 6, 8, ],
                        'conc': [1.02, 3.04, 4.85, 3.93, 2.01, 1.02, .51, 0.25,
                                 0.97, 3.11, 5.05, 4.1, 1.99, 1.05, .55, 0.3,
                                 1.04, 3.23, 5.15, 4.1, 2.4, 1.12, .52, 0.27]
@@ -46,75 +43,73 @@ n_times = len(pkdata.time.unique())
 app.layout = html.Div(className='', children=[
     html.Div(className='pk-banner', children='Noncompartmental Pharmacokinetics Analysis'),
     html.Div(className='container', children=[
-    html.Div(className='row', style={}, children=[
+        html.Div(className='row', style={}, children=[
 
-        html.Div(className='four columns pk-settings', children=[
-            html.P(['Settings']),
-            html.Div([
-                html.Label([html.Div(['Time points']),
-                            dcc.Input(
-                                id='times-input',
-                                placeholder='Enter a value...',
-                                type='number',
-                                value=n_times,
-                                debounce=True,
-                                #style={'width': 50}
-                            )]),
-                html.Label([html.Div(['Subjects']),
+            html.Div(className='four columns pk-settings', children=[
+                html.P(['Study Design']),
+                html.Div([
+                    html.Label([html.Div(['Time points']),
+                                dcc.Input(
+                                    id='times-input',
+                                    placeholder='Enter a value...',
+                                    type='number',
+                                    value=n_times,
+                                    debounce=True,
+                                    min=3,
+                                    max=999
+                                )]),
+                    html.Label([html.Div(['Subjects']),
 
-                          dcc.Input(
-                              id='subjects-input',
-                              placeholder='Enter a value...',
-                              type='number',
-                              value=n_subjects,
-                              debounce=True,
-                              #style={'width': 50}
-                          )]),
+                                dcc.Input(
+                                    id='subjects-input',
+                                    placeholder='Enter a value...',
+                                    type='number',
+                                    value=n_subjects,
+                                    debounce=True,
+                                    min=1,
+                                    max=48
+                                )]),
+                ]),
             ]),
-        ]),
-        html.Div(className='eight columns pk-data-table', children=[
+            html.Div(className='eight columns pk-data-table', children=[
                 dash_table.DataTable(
                     id='data-table',
-                    columns=[{"name": 'Time (min)', "id": 'time', 'type': 'numeric'}] +
+                    columns=[{"name": 'Time (hr)', "id": 'time', 'type': 'numeric'}] +
                             [{"name": 'Conc{} (uM)'.format(subject), 'id': subject, 'type': 'numeric'}
                              for subject in pkdata.subject_index.unique()],
                     data=utils.pkdata2dt(pkdata),
                     editable=True,
                     style_header=table_header_style,
-                    #active_cell=[1, 1]
-
                 )
             ])
 
-    ]),
-    html.Div(className='row', children= [
-        html.Div(className='six columns', children=[
-            dcc.Graph(
-                id='results-graph',
-
-            )
         ]),
+        html.Div(className='row', children=[
+            html.Div(className='six columns', children=[
+                dcc.Graph(
+                    id='results-graph',
 
-        html.Div(className='six columns pk-results-table', children=[
-        dash_table.DataTable(
-            id='results-table',
-            style_header=table_header_style,
-            style_cell_conditional=[
-                                       {
-                                           'if': {'column_id': 'param'},
-                                           'textAlign': 'right',
-                                           'paddingRight': 10
-                                       },
-                                        {
-                                            'if': {'row_index': 'odd'},
-                                            'backgroundColor': 'white'
-                                        }
-                                   ],
-            #content_style='fit',
-            #style_cell={'padding-left': 20}
-        )
-    ]),
-    ])
+                )
+            ]),
+
+            html.Div(className='six columns pk-results-table', children=[
+                dash_table.DataTable(
+                    id='results-table',
+                    style_header=table_header_style,
+                    style_cell_conditional=[
+                        {
+                            'if': {'column_id': 'param'},
+                            'textAlign': 'right',
+                            'paddingRight': 10
+                        },
+                        {
+                            'if': {'row_index': 'odd'},
+                            'backgroundColor': 'white'
+                        }
+                    ],
+                )
+            ]),
+        ])
     ])
 ])
 
@@ -132,7 +127,7 @@ app.layout = html.Div(className='', children=[
      State('data-table', 'selected_cells'),
      ])
 def update_data_table(subjects, rows, records, active_cell, selected_cells):
-    columns = [{"name": 'Time (min)', "id": 'time', 'type': 'numeric'}] + \
+    columns = [{"name": 'Time (hr)', "id": 'time', 'type': 'numeric'}] + \
               [{"name": 'Subj{} Conc (uM)'.format(subject + 1), 'id': subject, 'type': 'numeric'}
                for subject in range(subjects)]
 
@@ -148,7 +143,7 @@ def update_data_table(subjects, rows, records, active_cell, selected_cells):
         for x in range(subjects, current_subjects):
             record.pop(str(x))
 
-#   highlight cell 0,0 so users will see the table is editable on first visit
+    #   highlight cell 0,0 so users will see the table is editable on first visit
     if active_cell is None:
         active_cell = [0, 0]
         selected_cells = [[0, 0]]
@@ -186,9 +181,10 @@ def update_output(records):
         layout=go.Layout(
             xaxis=dict(zeroline=False),
             yaxis=dict(title=dict(text='Conc (uM)',
-                                  font=dict(family='"Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif',
-                                            size=12)
-                                    ),
+                                  font=dict(
+                                      family='"Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif',
+                                      size=12)
+                                  ),
 
                        type='log',
                        rangemode='tozero',
@@ -201,7 +197,7 @@ def update_output(records):
                 r=30,
                 b=50,
                 t=50,
-    ),
+            ),
             showlegend=False,
             height=331,
             paper_bgcolor='rgb(245, 247, 249)',
@@ -215,8 +211,8 @@ def update_output(records):
                for subject in pkd.subject_index.unique()] + \
               [{'name': 'Mean', 'id': 'mean'}, {'name': 'StDev', 'id': 'stdev'}]
 
-    result_names = OrderedDict(t_half='T½ (min)', auc0_t='AUC_0-t (uM*min)', auc0_inf='AUC_0-inf (uM*min)',
-                               percent_extrap='%Extrap', c_max='Cmax (uM)', t_max='Tmax (min)')
+    result_names = OrderedDict(t_half='T½ (hr)', auc0_t='AUC_0-t (uM*hr)', auc0_inf='AUC_0-inf (uM*hr)',
+                               percent_extrap='%Extrap', c_max='Cmax (uM)', t_max='Tmax (hr)')
 
     data = []
     for key, name in result_names.items():
