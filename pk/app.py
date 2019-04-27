@@ -121,11 +121,17 @@ app.layout = html.Div(className='', children=[
 
 @app.callback(
     [Output('data-table', 'columns'),
-     Output('data-table', 'data')],
+     Output('data-table', 'data'),
+     Output('data-table', 'active_cell'),
+     Output('data-table', 'selected_cells')
+     ],
     [Input('subjects-input', 'value'),
      Input('times-input', 'value')],
-    [State('data-table', 'data')])
-def update_data_table(subjects, rows, records):
+    [State('data-table', 'data'),
+     State('data-table', 'active_cell'),
+     State('data-table', 'selected_cells'),
+     ])
+def update_data_table(subjects, rows, records, active_cell, selected_cells):
     columns = [{"name": 'Time (min)', "id": 'time', 'type': 'numeric'}] + \
               [{"name": 'Subj{} Conc (uM)'.format(subject + 1), 'id': subject, 'type': 'numeric'}
                for subject in range(subjects)]
@@ -142,7 +148,12 @@ def update_data_table(subjects, rows, records):
         for x in range(subjects, current_subjects):
             record.pop(str(x))
 
-    return columns, records
+#   highlight cell 0,0 so users will see the table is editable on first visit
+    if active_cell is None:
+        active_cell = [0, 0]
+        selected_cells = [[0, 0]]
+
+    return columns, records, active_cell, selected_cells
 
 
 @app.callback([Output('results-graph', 'figure'),
