@@ -54,7 +54,7 @@ app.layout = html.Div(className='', children=[
                                     placeholder='Enter a value...',
                                     type='number',
                                     value=n_times,
-                                    debounce=True,
+                                    #debounce=True,
                                     min=3,
                                     max=999
                                 )]),
@@ -65,7 +65,7 @@ app.layout = html.Div(className='', children=[
                                     placeholder='Enter a value...',
                                     type='number',
                                     value=n_subjects,
-                                    debounce=True,
+                                    #debounce=True,
                                     min=1,
                                     max=48
                                 )]),
@@ -222,10 +222,15 @@ def update_output(records):
     for key, name in result_names.items():
         d = dict(param=name)
         for subject in pkd.subject_index.unique():
-            d[int(subject)] = round(getattr(results[subject], key,0), 1)
+            d[int(subject)] = round(getattr(results[subject], key, 0), 1)
 
-        d['mean'] = round(statistics.mean([getattr(results[s], key,0) for s in pkd.subject_index.unique()]), 1)
-        d['stdev'] = round(statistics.stdev([getattr(results[s], key,0) for s in pkd.subject_index.unique()]), 2)
+
+        try:
+            d['mean'] = round(statistics.mean([getattr(results[s], key) for s in pkd.subject_index.unique()]), 1)
+            d['stdev'] = round(statistics.stdev([getattr(results[s], key) for s in pkd.subject_index.unique()]), 2)
+        except (statistics.StatisticsError, AttributeError):
+            d['mean'] = None
+            d['stdev'] = None
 
         data.append(d)
 
