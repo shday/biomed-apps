@@ -54,7 +54,7 @@ app.layout = html.Div(className='', children=[
                                     placeholder='Enter a value...',
                                     type='number',
                                     value=n_times,
-                                    #debounce=True,
+                                    # debounce=True,
                                     min=3,
                                     max=999
                                 )]),
@@ -65,7 +65,7 @@ app.layout = html.Div(className='', children=[
                                     placeholder='Enter a value...',
                                     type='number',
                                     value=n_subjects,
-                                    #debounce=True,
+                                    # debounce=True,
                                     min=1,
                                     max=48
                                 )]),
@@ -156,7 +156,6 @@ def update_data_table(subjects, rows, records, active_cell, selected_cells):
                Output('results-table', 'data')],
               [Input('data-table', 'data')])
 def update_output(records):
-
     pkd = utils.dt2pkdata(records)
 
     fig_data = []
@@ -174,7 +173,7 @@ def update_output(records):
         )
         try:
             results[subject] = utils.calc_pk(df['time'],
-                                         df['conc'])
+                                             df['conc'])
         except ValueError:
             results[subject] = None
 
@@ -223,7 +222,6 @@ def update_output(records):
         d = dict(param=name)
         for subject in pkd.subject_index.unique():
             d[int(subject)] = round(getattr(results[subject], key, 0), 1)
-
 
         try:
             d['mean'] = round(statistics.mean([getattr(results[s], key) for s in pkd.subject_index.unique()]), 1)
