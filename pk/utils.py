@@ -66,7 +66,7 @@ def dt2pkdata(dt):
         for rec in dt:
             try:
                 records.append({'time': float(rec['time']), 'subject_index': int(subject), 'conc': float(rec[subject])})
-            except ValueError:
+            except (ValueError, KeyError):
                 continue
 
     return pd.DataFrame.from_records(records)

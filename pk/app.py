@@ -156,7 +156,9 @@ def update_data_table(subjects, rows, records, active_cell, selected_cells):
                Output('results-table', 'data')],
               [Input('data-table', 'data')])
 def update_output(records):
+
     pkd = utils.dt2pkdata(records)
+
     fig_data = []
     results = {}
 
@@ -170,9 +172,11 @@ def update_output(records):
                 mode='lines+markers'
             )
         )
-
-        results[subject] = utils.calc_pk(df['time'],
+        try:
+            results[subject] = utils.calc_pk(df['time'],
                                          df['conc'])
+        except ValueError:
+            results[subject] = None
 
     figure = go.Figure(
 
@@ -218,10 +222,10 @@ def update_output(records):
     for key, name in result_names.items():
         d = dict(param=name)
         for subject in pkd.subject_index.unique():
-            d[int(subject)] = round(getattr(results[subject], key), 1)
+            d[int(subject)] = round(getattr(results[subject], key,0), 1)
 
-        d['mean'] = round(statistics.mean([getattr(results[s], key) for s in pkd.subject_index.unique()]), 1)
-        d['stdev'] = round(statistics.stdev([getattr(results[s], key) for s in pkd.subject_index.unique()]), 2)
+        d['mean'] = round(statistics.mean([getattr(results[s], key,0) for s in pkd.subject_index.unique()]), 1)
+        d['stdev'] = round(statistics.stdev([getattr(results[s], key,0) for s in pkd.subject_index.unique()]), 2)
 
         data.append(d)
 
