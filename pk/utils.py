@@ -10,7 +10,6 @@ from collections import namedtuple
 import pandas as pd
 import numpy as np
 
-
 PKParams = namedtuple('PKParams', 't_half, rate_const, auc0_t, auc0_inf,'
                                   'percent_extrap, c_max, t_max, term_slope, term_inter ')
 
@@ -27,7 +26,11 @@ def calc_pk(x, y, iv_calc=False, term_points=3):
     t_max = x[y.index(max(y))]
     auc0_t = np.trapz(y, x)
 
-    slope, inter = np.polyfit(x[-term_points:], [math.log(i) for i in y[-term_points:]], deg=1)
+    try:
+        slope, inter = np.polyfit(x[-term_points:], [math.log(i) for i in y[-term_points:]], deg=1)
+    except ValueError:
+        return PKParams(None, None, auc0_t, None, None,
+                        c_max, t_max, None, None)
 
     rate_const = -slope
 
@@ -43,11 +46,9 @@ def calc_pk(x, y, iv_calc=False, term_points=3):
 
 def pkdata2dt(df):
     pivoted = df.pivot(index='time', values='conc', columns='subject_index')
-
     todict = pivoted.to_dict('index')
 
     records = []
-
     for r in pivoted.index:
         record = todict[r]
         record[pivoted.index.name] = r
@@ -61,7 +62,6 @@ def dt2pkdata(dt):
     keys.remove('time')
 
     records = []
-
     for subject in keys:
         for rec in dt:
             try:
@@ -92,9 +92,9 @@ def test():
 def test2():
     pkdata = pd.DataFrame({'subject_index': [0, 0, 0, 0, 0, 0, 0, 0,
                                              1, 1, 1, 1, 1, 1, 1, 1],
-                           'time': [5, 15, 30,  60, 120, 240, 360, 480,
+                           'time': [5, 15, 30, 60, 120, 240, 360, 480,
                                     5, 15, 30, 60, 120, 240, 360, 480],
-                           'conc': [1, 3, 5,  4, 2, 1, .5, 0.25,
+                           'conc': [1, 3, 5, 4, 2, 1, .5, 0.25,
                                     1, 3.2, 5.1, 4.1, 2.2, 1, .55, 0.3]
                            })
 

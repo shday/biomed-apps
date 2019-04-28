@@ -131,6 +131,7 @@ def update_data_table(subjects, rows, records, active_cell, selected_cells):
               [{"name": 'Subj{} Conc (uM)'.format(subject + 1), 'id': subject, 'type': 'numeric'}
                for subject in range(subjects)]
 
+    #   adjust number of rows
     change = rows - len(records)
     if change > 0:
         for i in range(change):
@@ -138,10 +139,11 @@ def update_data_table(subjects, rows, records, active_cell, selected_cells):
     elif change < 0:
         records = records[:rows]
 
+    #   delete column data if needed
     for record in records:
-        current_subjects = len(record) - 1
+        current_subjects = max([int(k) for k in record.keys() if k != 'time']) + 1
         for x in range(subjects, current_subjects):
-            record.pop(str(x))
+            record.pop(str(x), None)
 
     #   highlight cell 0,0 so users will see the table is editable on first visit
     if active_cell is None:
@@ -178,9 +180,7 @@ def update_output(records):
             results[subject] = None
 
     figure = go.Figure(
-
         data=fig_data,
-
         layout=go.Layout(
             xaxis=dict(zeroline=False),
             yaxis=dict(title=dict(text='Conc (uM)',
@@ -188,12 +188,10 @@ def update_output(records):
                                       family='"Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif',
                                       size=12)
                                   ),
-
                        type='log',
                        rangemode='tozero',
                        zeroline=False,
                        showticklabels=False
-
                        ),
             margin=dict(
                 l=40,
@@ -205,7 +203,6 @@ def update_output(records):
             height=294,
             paper_bgcolor='rgb(245, 247, 249)',
             plot_bgcolor='rgb(245, 247, 249)',
-
         )
     )
 
@@ -221,15 +218,16 @@ def update_output(records):
     for key, name in result_names.items():
         d = dict(param=name)
         for subject in pkd.subject_index.unique():
-            d[int(subject)] = round(getattr(results[subject], key, 0), 1)
-
+            try:
+                d[int(subject)] = round(getattr(results[subject], key), 1)
+            except (AttributeError, TypeError):
+                d[int(subject)] = None
         try:
             d['mean'] = round(statistics.mean([getattr(results[s], key) for s in pkd.subject_index.unique()]), 1)
             d['stdev'] = round(statistics.stdev([getattr(results[s], key) for s in pkd.subject_index.unique()]), 2)
-        except (statistics.StatisticsError, AttributeError):
+        except (statistics.StatisticsError, AttributeError, TypeError):
             d['mean'] = None
             d['stdev'] = None
-
         data.append(d)
 
     return figure, columns, data
