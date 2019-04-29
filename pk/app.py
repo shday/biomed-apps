@@ -166,11 +166,7 @@ def update_output(records):
                 mode='lines+markers'
             )
         )
-        try:
-            results[subject] = utils.calc_pk(df['time'],
-                                             df['conc'])
-        except ValueError:
-            results[subject] = None
+        results[subject] = utils.calc_pk(df['time'], df['conc'])
 
     figure = go.Figure(
         data=fig_data,
@@ -178,7 +174,8 @@ def update_output(records):
             xaxis=dict(zeroline=False),
             yaxis=dict(title=dict(text='Conc (uM)',
                                   font=dict(
-                                      family='"Open Sans", "HelveticaNeue", "Helvetica Neue", Helvetica, Arial, sans-serif',
+                                      family='"Open Sans", "HelveticaNeue", "Helvetica Neue",'
+                                             ' Helvetica, Arial, sans-serif',
                                       size=12)
                                   ),
                        type='log',
