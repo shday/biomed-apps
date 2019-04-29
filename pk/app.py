@@ -138,10 +138,11 @@ def update_data_table(subjects, rows, records):
         records = records[:rows]
 
     #   delete column data if needed
+    valid_column_ids = ['time'] + [str(x) for x in range(subjects)]
     for record in records:
-        current_subjects = max([int(k) for k in record.keys() if k != 'time']) + 1
-        for x in range(subjects, current_subjects):
-            record.pop(str(x), None)
+        invalid_column_ids = set(record.keys()) - set(valid_column_ids)
+        for col_id in invalid_column_ids:
+            record.pop(col_id)
 
     return columns, records
 
