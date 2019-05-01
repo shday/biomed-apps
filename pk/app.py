@@ -154,10 +154,14 @@ def update_data_table(subjects, rows, records):
 def update_output(records):
     pkd = utils.dt2pkdata(records)
 
+    if not pkd.empty:
+        subjects = pkd.subject_index.unique()
+    else:
+        subjects = []
+
     fig_data = []
     results = {}
-
-    for subject in pkd.subject_index.unique():
+    for subject in subjects:
         df = pkd.loc[pkd.subject_index == subject, ['time', 'conc']]
         fig_data.append(
             go.Scatter(
@@ -199,7 +203,7 @@ def update_output(records):
 
     columns = [{"name": "Parameter", "id": 'param'}] + \
               [{"name": 'Subj{}'.format(subject + 1), 'id': subject, 'type': 'numeric'}
-               for subject in pkd.subject_index.unique()] + \
+               for subject in subjects] + \
               [{'name': 'Mean', 'id': 'mean'}, {'name': 'StDev', 'id': 'stdev'}]
 
     result_names = OrderedDict(t_half='T½ (hr)', auc0_t='AUC_0-t (uM*hr)', auc0_inf='AUC_0-inf (uM*hr)',
@@ -208,14 +212,14 @@ def update_output(records):
     data = []
     for key, name in result_names.items():
         d = dict(param=name)
-        for subject in pkd.subject_index.unique():
+        for subject in subjects:
             try:
                 d[int(subject)] = round(getattr(results[subject], key), 1)
             except (AttributeError, TypeError):
                 d[int(subject)] = None
         try:
-            d['mean'] = round(statistics.mean([getattr(results[s], key) for s in pkd.subject_index.unique()]), 1)
-            d['stdev'] = round(statistics.stdev([getattr(results[s], key) for s in pkd.subject_index.unique()]), 2)
+            d['mean'] = round(statistics.mean([getattr(results[s], key) for s in subjects]), 1)
+            d['stdev'] = round(statistics.stdev([getattr(results[s], key) for s in subjects]), 2)
         except (statistics.StatisticsError, AttributeError, TypeError):
             d['mean'] = None
             d['stdev'] = None
