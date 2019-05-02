@@ -1,4 +1,4 @@
-# NCA.py
+# pkanalysis.py
 
 ## About this app
 
