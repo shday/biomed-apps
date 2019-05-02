@@ -72,7 +72,7 @@ def dt2pkdata(dt):
     return pd.DataFrame.from_records(records)
 
 
-def test():
+def test_calcpk():
     pkdata1 = pd.DataFrame({'subject_index': [0, 0, 0, 0, 0, 0, 0, 0, 0],
                             'time': [0, 5, 15, 30, 60, 120, 240, 360, 480],
                             'conc': [0, 1, 3, 5, 4, 2, 1, .5, 0.25]
@@ -89,7 +89,7 @@ def test():
     assert p1 == p2
 
 
-def test2():
+def test_pkdata2dt():
     pkdata = pd.DataFrame({'subject_index': [0, 0, 0, 0, 0, 0, 0, 0,
                                              1, 1, 1, 1, 1, 1, 1, 1],
                            'time': [5, 15, 30, 60, 120, 240, 360, 480,
@@ -110,7 +110,3 @@ def test2():
         {0: 0.5, 1: 0.55, 'time': 360},
         {0: 0.25, 1: 0.3, 'time': 480}]
 
-
-if __name__ == '__main__':
-    test()
-    test2()
