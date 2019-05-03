@@ -51,9 +51,5 @@ Open a browser at http://127.0.0.1:8050
 
 ## Screenshots
 
-[add a screenshot or (ideally) a gif of the app in action]
+![demo.gif](demo.gif)
 
-## Resources
-
-[add a list of references that you used here during development of the
-app; if you don't have anything to put here, delete this section]
