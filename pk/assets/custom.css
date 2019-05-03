@@ -3,43 +3,41 @@
   max-width: 1200px;}
 
 
-
-
-.pk-banner {
+.pkcalc-banner {
   background: rgb(2,21,70);
   color: white;
   padding: 12px 40px;
   font-size: 20px;
   margin-bottom: 30px;}
 
-.pk-settings {
+.pkcalc-settings {
   height:270px;
   margin-bottom:30px;
   background: rgb(245, 247, 249);
   border: 1px solid #E1E1E1}
 
-.pk-settings > p {
+.pkcalc-settings > p {
   margin:10px 0px 50px 10px;}
 
-.pk-settings > div {
+.pkcalc-settings > div {
   margin:0px 40px;}
 
-.pk-settings label {
+.pkcalc-settings label {
   display: flex;
   justify-content: space-around;
   margin: 10px 0px}
 
-.pk-settings label div {margin-top: auto;
+.pkcalc-settings label div {margin-top: auto;
            margin-bottom: auto;
            font-size: 12px;
            color: grey;
            width: 80px}
 
-.pk-settings input {height: 30px;
+.pkcalc-settings input {height: 30px;
                     width: 55px;
                     font-size: 12px;}
 
-.pk-data-table {
+.pkcalc-data-table {
   height: 271px;
   overflow: auto;}
 
@@ -47,7 +45,7 @@
   padding: 5px 15px;
   }
 
-.pk-results-table {
+.pkcalc-results-table {
   overflow: auto;
   }
 

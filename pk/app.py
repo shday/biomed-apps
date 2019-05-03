@@ -41,11 +41,11 @@ n_subjects = len(pkdata.subject_index.unique())
 n_times = len(pkdata.time.unique())
 
 app.layout = html.Div(className='', children=[
-    html.Div(className='pk-banner', children='Noncompartmental Pharmacokinetics Analysis'),
+    html.Div(className='pkcalc-banner', children='Noncompartmental Pharmacokinetics Analysis'),
     html.Div(className='container', children=[
         html.Div(className='row', style={}, children=[
 
-            html.Div(className='four columns pk-settings', children=[
+            html.Div(className='four columns pkcalc-settings', children=[
                 html.P(['Study Design']),
                 html.Div([
                     html.Label([html.Div(['Time points']),
@@ -71,7 +71,7 @@ app.layout = html.Div(className='', children=[
                                 )]),
                 ]),
             ]),
-            html.Div(className='eight columns pk-data-table', children=[
+            html.Div(className='eight columns pkcalc-data-table', children=[
                 dash_table.DataTable(
                     id='data-table',
                     columns=[{"name": 'Time (hr)', "id": 'time', 'type': 'numeric'}] +
@@ -94,7 +94,7 @@ app.layout = html.Div(className='', children=[
                 )
             ]),
 
-            html.Div(className='six columns pk-results-table', children=[
+            html.Div(className='six columns pkcalc-results-table', children=[
                 dash_table.DataTable(
                     id='results-table',
                     style_header=table_header_style,

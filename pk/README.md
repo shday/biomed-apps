@@ -1,4 +1,4 @@
-# pkanalysis.py
+# PKcalc
 
 ## About this app
 
@@ -31,7 +31,7 @@ the following:
 
 ```bash
 
-python3 -m venv ./myvenv
+python3 -m venv myvenv
 
 source myvenv/bin/activate
 
@@ -39,13 +39,13 @@ source myvenv/bin/activate
 
 Install the requirements:
 
-```
-pip3 install -r requirements.txt
+```bash
+pip install -r requirements.txt
 ```
 Run the app:
 
-```
-python3 app.py
+```bash
+python app.py
 ```
 Open a browser at http://127.0.0.1:8050
 
