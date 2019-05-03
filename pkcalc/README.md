@@ -3,7 +3,7 @@
 ## About this app
 
 This app calculates pharmacokinetic parameters from entered plasma
-concentrations.
+concentrations for up to 48 subjects.
 
 ### Noncompartmental Pharmacokinetics Analysis (NCA)
 
