@@ -45,7 +45,7 @@ Open a browser at http://127.0.0.1:8050
 
 ![demo.gif](demo.gif)
 
-##Notes:
+## Notes:
 * AUC values are calculated using the trapezoid rule on non-logged
 concentrations.
 * The AUC calculation includes t=0, even if no concentration is entered, in which
