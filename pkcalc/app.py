@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Thu Apr  4 17:43:39 2019
-
-@author: Stephen Day
-"""
 
 import statistics
 from collections import OrderedDict

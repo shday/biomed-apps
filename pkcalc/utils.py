@@ -1,9 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Apr  9 18:48:55 2019
-
-@author: shday
-"""
 
 import math
 from collections import namedtuple
